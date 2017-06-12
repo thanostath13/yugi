@@ -24,8 +24,8 @@
 
 }
 .popover-content {
-    /* max-height: 500px;
-     overflow: auto;*/
+ 
+overflow-y: auto;
 }
 
 .detailview h2{

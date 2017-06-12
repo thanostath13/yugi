@@ -153,8 +153,13 @@ app.PopOverView = Backbone.View.extend({
             content: this.template(this.model.toJSON()),
             html: true
         });
-        console.log(this.model.toJSON());
+        //console.log(this.model.toJSON());
         $('.cardname').popover('show');
+		
+		var aaa = $(window).height() - 100
+		$('.popover-content').css('max-height', aaa +'px');
+		
+		
         $('.addcard').click(function () {
             console.log(pop.model);
             myapp.instances.mycollection.checkBeforeAdd(pop.model);
