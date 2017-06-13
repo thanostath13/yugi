@@ -11,28 +11,32 @@
         <link rel="stylesheet" type="text/css" href="css/main.css">
 
         <title>Yu Gi Oh! Deck Browser</title>
+        <!--shortcut icon-->
         <link rel="shortcut icon" type="image/x-icon" href="img/yu_gi.png"/>
 
     </head>
 
     <body>
-        <div id="mymodalSpace">
 
-        </div>
+        <div id="mymodalSpace"></div>
 
-
+        <!--/.navbar-collapse -->
         <nav class="navbar navbar-default navbar-fixed-top">
             <div class="container">
                 <div class="navbar-header">
+
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
                         <span class="sr-only">Toggle navigation</span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
+                    <!-- Page brand -->
                     <a class="navbar-brand" href="#">Yu Gi Oh Deck!</a>
                 </div>
                 <div id="navbar" class="navbar-collapse collapse">
+
+                    <!-- Main Card Search -->
                     <form class="navbar-form navbar-left">
                         <div class="form-group">
                             <input type="text" placeholder="Enter Card Name" class="form-control cardname"  >
@@ -40,58 +44,41 @@
 
                     </form>
                 </div><!--/.navbar-collapse -->
-            </div>
+            </div><!--/.container -->
         </nav>
-        <div class="jumbotron" >
 
-        </div>
-
+        <div class="jumbotron" ></div>
 
         <div class="container">
-            <!-- Example row of columns -->
-
             <div class="row">
                 <div class="col-md-4  col-xs-12">
+                    <!-- column with Card collection -->
                     <ul class="list-group" id="mycollection">
                         <li class=" yugiitemempty list-group-item">Nothing in your Deck! </li>
-
                     </ul>
-
                 </div>
+                
+                <!-- Jumbotron with Main Card Details -->
                 <div class="col-md-8  col-xs-12 " id="det">
                     <div class="yugidetails bs-component">
                         <div class="jumbotron detailview" >
-
-                            
-
-
                         </div>
                     </div>
                 </div>
-            </div>
-
+            </div><!--/.row -->
             <hr>
 
+            <!-- Page footer -->
             <footer class= "footer">
                 <p class="pull-left">&copy; 2017 ThanoStath.</p>
                 <p class="pull-right"><a href="#top">Back to top</a></p>
             </footer>
 
-
-
-
-
-
-
-
-
         </div> <!-- /container -->
 
-
-
-
-
-
+        <!-- ************************************************************************ -->
+        <!--                             Scripts Calls                                -->
+        <!-- ************************************************************************ -->       
 
         <!-- Jquery -->
         <script src = js/libs/jquery-min.js></script>
@@ -101,7 +88,7 @@
         <script src = js/libs/backbone-min.js></script>
         <!--Bootstrap Js -->
         <script src="js/libs/bootstrap.min.js"></script>
-        <script src="https://cdn.rawgit.com/nnattawat/flip/master/dist/jquery.flip.min.js"></script>
+
         <!-- app initialize -->
         <script src="js/app.js"></script>
         <script src="js/views.js"></script>

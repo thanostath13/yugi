@@ -4,74 +4,68 @@
 
 /* global Backbone, jQuery, _, ENTER_KEY, ESC_KEY, myapp, tempdetail */
 var app = app || {};
+
 //******************************************************************************
 //                The Application  (The top-level piece of UI)
 //******************************************************************************
 
 app.AppView = Backbone.View.extend({
-// Instead of generating a new element, bind to the existing skeleton of
-// the App already present in the HTML.
+    
+    // Instead of generating a new element, bind to the existing skeleton of
+    // the App already present in the HTML.
     el: 'body',
-    // Our template for the line of statistics at the bottom of the app.
     // Delegated events for creating new items, and clearing completed ones.
+    
     events: {
         'keypress .cardname': 'searchWithName'
     },
-    // At initialization we bind to the relevant events on the `Todos`
-    // collection, when items are added or changed. Kick things off by
-    // loading any preexisting todos that might be saved in *localStorage*.
+    
+    // At initialization we bind to the relevant events 
     initialize: function () {
         this.instances = {};
-        this.instances.mycollection = new app.CardC(); // 
+        // this is aur collection
+        this.instances.mycollection = new app.CardC(); 
 
-        // this.allCheckbox = this.$('.toggle-all')[0];
+        // we get the cardname as input
         this.$input = this.$('.cardname');
     },
-    // Re-rendering the App just means refreshing the statistics -- the rest
-    // of the app doesn't change.
+    
+    // Re-rendering the App just means refreshing data but the rest of the app doesn't change.
     render: function () {
-
     },
-    // Add a single todo item to the list by creating a view for it, and
-    // appending its element to the `<ul>`.
-    addOne: function (todo) {
-        var view = new app.TodoView({model: todo});
-        this.$list.append(view.render().el);
-    },
-    // Add all items in the **Todos** collection at once.
-    addAll: function () {
-        this.$list.html('');
-        app.todos.each(this.addOne, this);
-    },
-    filterOne: function (todo) {
-        todo.trigger('visible');
-    },
-    filterAll: function () {
-        app.todos.each(this.filterOne, this);
-    },
+    
     searchWithName: function (e) {
+        
         var thisview = this;
+        // search input after press ENTER_KEY
         if (e.which === ENTER_KEY && this.$input.val().trim()) {
             $('.cardname').attr('disabled', true);
+            
+            // make a new Http Request to get data from our api
             var request = new XMLHttpRequest();
             request.open('GET', apiurl + '/card_data/' + this.$input.val().trim());
             request.onreadystatechange = function () {
                 if (this.readyState === 4) {
+                    
                     $('.cardname').attr('disabled', false);
                     console.log('Status:', this.status);
                     console.log('Headers:', this.getAllResponseHeaders());
                     console.log('Body:', this.responseText);
                     var atts = JSON.parse(this.responseText);
+
                     if (thisview.instances.popover !== undefined) {
                         thisview.instances.popover.destroy();
                         thisview.instances.popover = undefined;
                     }
 
-                    // console.log(atts);
+                    // in case that api dont returns any card
                     if (atts.status === 'fail') {
                         thisview.instances.popover = new app.PopOverViewEmtyView({model: mymodel});
+                    // in case that api returns a card 
                     } else if (atts.status === 'success') {
+                        // we create an new card model
                         var mymodel = new app.CardM(atts);
+                        // we call a new popover for this card
                         thisview.instances.popover = new app.PopOverView({model: mymodel});
                     }
 
@@ -80,12 +74,14 @@ app.AppView = Backbone.View.extend({
             ;
             request.send();
             e.preventDefault();
+            
         } else {
             if (thisview.instances.popover !== undefined) {
                 thisview.instances.popover.destroy();
             }
         }
     },
+    
     dialogAlert: function (title, text, icon) {
         if (icon === undefined) {
             icon = 'glyphicon-info-sign';
@@ -103,22 +99,21 @@ app.AppView = Backbone.View.extend({
                 + '</div>'
                 + '<div class="modal-footer">'
                 + '<button type="button" class="btn btn-primary" data-dismiss="modal">ok</button>'
-                //     + '    <button type="button" class="btn btn-primary">Save changes</button>'
                 + '</div>'
                 + '</div><!-- /.modal-content -->'
                 + ' </div><!-- /.modal-dialog -->'
                 + '</div><!-- /.modal -->'
                 + '');
+        
         var htmltoshow = alTemplate({title: title, text: text, icon: icon});
         $('#mymodalSpace').html(htmltoshow);
         $('#myModal').modal('show');
     },
+    
     //some global functions..
     jump: function (h) {
         var top = document.getElementById(h).offsetTop;
         window.scrollTo(0, top - 150);
-        //location.href = h;
-        //window.scrollTo(0, -50);
     }
 
 
@@ -155,9 +150,9 @@ app.PopOverView = Backbone.View.extend({
         });
         //console.log(this.model.toJSON());
         $('.cardname').popover('show');
-		
-		var aaa = $(window).height() - 100
-		$('.popover-content').css('max-height', aaa +'px');
+        
+	var scrolPopOver = $(window).height() - 180;
+	$('.popover-content').css('max-height', scrolPopOver +'px');
 		
 		
         $('.addcard').click(function () {
@@ -183,17 +178,19 @@ app.ColItemView = Backbone.View.extend({
         this.el = '#' + this.model.get("id");
         this.render();
     },
+    // no events nedeed
     events: {
-        //   'click': 'displayDetails'
     },
+    // generate our html code for card item in our list  
     template: _.template(''
             + '<li class="yugiitem list-group-item" id="<%print(id) %>">'
             + '<div class="dl-horizontal">'
-            + '<div class="pull-left" ><img src = "<%print(image) %> "  alt = "thumbnail" class = "img-rounded"></div>'
-            + '<div class="desc" ><b>Name: <%print(data.name)%></b><br><p class="text-muted">Type :<%print(data.type)%></div></prototype>'
+            + '<div class="pull-left" >\n\ '
+            + '<img src = "<%print(image) %> "  alt = "thumbnail" class = "img-rounded"></div>'
+            + '<div class="desc" ><b>Name: </b><%print(data.name)%><br>\n\ '
+            + '<p class="text-muted"><b>Type: </b><%print(data.type)%></div></prototype>'
             + '</div>'
-            + '</li>'
-            )
+            + '</li>')
     ,
     render: function () {
         $('.yugiitemempty').hide();
@@ -201,8 +198,7 @@ app.ColItemView = Backbone.View.extend({
         var html = this.template(this.model.toJSON());
         $('#mycollection').append(html);
         $(this.el).click(function () {
-
-            view.displayDetails();
+        view.displayDetails();
         });
     },
     destroy: function () {
@@ -226,16 +222,23 @@ app.ColItemView = Backbone.View.extend({
 
 app.PopOverViewEmtyView = Backbone.View.extend({
     el: '.cardname',
+    // initialization of Emty View Pop Over window
     initialize: function () {
+        // call render function
         this.render();
     },
+    
     render: function () {
+        
         var pop = this;
+        
+        // generate our html code for card details 
         $(this.el).popover({
+            // plase this popover under the search
             placement: "bottom",
             title: '<h4>Emty List</h4>',
-            content: '<img \n\
-                     src = "img/yuug1.png"  alt = "thumbnail" class = "img-thumbnail"></div></div><hr>'
+            // html code for no card result (popup window) 
+            content: '<img src = "img/yuug1.png"  alt = "thumbnail" class = "img-thumbnail"></div></div><hr>'
                     + '<div class="panel panel-danger"><div class="panel-heading">'
                     + '<h3 class="panel-title">Note</h3>'
                     + '</div>'
@@ -245,18 +248,29 @@ app.PopOverViewEmtyView = Backbone.View.extend({
                     + '<div class="modal-footer">'
                     + '<button type="button" class="btn btn-danger closepop" data-dismiss="modal">Close</button>'
                     + '</div>'
-            ,
+            , 
             html: true
         });
+        
+        // show our popover
         $(this.el).popover('show');
+        
+        var scrolPopOver = $(window).height() - 180;
+	$('.popover-content').css('max-height', scrolPopOver +'px');
+        
+        // close our popover function
         $('.closepop').click(function () {
             pop.destroy();
         });
+        
     },
+    
+    // destroy our popover function
     destroy: function () {
         $(this.el).popover('destroy');
     }
 });
+
 //******************************************************************************
 //                               CardDetailsView
 //******************************************************************************
@@ -266,52 +280,54 @@ app.CardDetailsView = Backbone.View.extend({
     initialize: function () {
         this.render();
     },
+    // our events for our buttons ( close and delete )
     events: {
         'click .detclose': 'closeCard',
         'click .detdelete': 'deleteCard'
     },
+    
+    // generate our html code for card details 
     template: _.template(''
             + '<h2>Card Details</h2>'
             + '<table class="table table-striped table-hover ">'
-            + ' <thead> '
-            + '   <tr>'
-            + '       <th><img src = "<% print(image) %>" alt = "thumbnail" class = "img-thumbnail" width ="300"></th>   '
-            + '       <th><img src = "img/yu_gi1.png" alt = "thumbnail" class = "img-thumbnail" width ="300"></th> '
-            + '   <tr>'
-            + ' </thead>'
-            + ' </table> '
-            + ' <div class="panel panel-default">'
-            + '     <div class="panel-heading">Name:</div><div class="panel-body"><% print(data.name) %></div>'
-            + '      <div class="panel-heading">Type:</div><div class="panel-body"><% print(data.type) %></div>'
-            + '     <div class="panel-heading">Text:</div><div class="panel-body"><% print(data.text) %></div>'
-            + '    <div class="panel-heading">Card Type:</div><div class="panel-body"><% print(data.card_type) %></div>'
-            + '   <div class="panel-heading">Family:</div><div class="panel-body"><% print(data.family) %></div>'
-            + '  <div class="panel-heading">Attack:</div><div class="panel-body"><% print(data.atk) %></div>'
-            + ' <div class="panel-heading">Defence:</div><div class="panel-body"><% print(data.def) %></div>'
-            + ' <div class="panel-heading">Level:</div><div class="panel-body"><% print(data.level) %></div>'
+            + '<thead> '
+            + '<tr>'
+            + '<th><img src = "<% print(image) %>" alt = "thumbnail" class = "img-thumbnail" width ="300"></th>   '
+            + '<th><img src = "img/yu_gi1.png" alt = "thumbnail" class = "img-thumbnail" width ="300"></th> '
+            + '<tr>'
+            + '</thead>'
+            + '</table>'
+            + '<div class="panel panel-default">'
+            + '<div class="panel-heading">Name:</div><div class="panel-body"><% print(data.name) %></div>'
+            + '<div class="panel-heading">Type:</div><div class="panel-body"><% print(data.type) %></div>'
+            + '<div class="panel-heading">Text:</div><div class="panel-body"><% print(data.text) %></div>'
+            + '<div class="panel-heading">Card Type:</div><div class="panel-body"><% print(data.card_type) %></div>'
+            + '<div class="panel-heading">Family:</div><div class="panel-body"><% print(data.family) %></div>'
+            + '<div class="panel-heading">Attack:</div><div class="panel-body"><% print(data.atk) %></div>'
+            + '<div class="panel-heading">Defence:</div><div class="panel-body"><% print(data.def) %></div>'
+            + '<div class="panel-heading">Level:</div><div class="panel-body"><% print(data.level) %></div>'
             + '<div class="panel-heading">Property:</div><div class="panel-body"><% print(data.property) %></div>'
-
             + '</div><div class="modal-footer"> '
-            + '  <a href="#" class="btn btn-warning detclose">Close Window</a>'
-            + '  <a href="#" class="btn btn-danger pull-right detdelete">Delete Card</a>'
-            + ' </div>'
-            + ''),
+            + '<a href="#" class="btn btn-warning detclose">Close Window</a>'
+            + '<a href="#" class="btn btn-danger pull-right detdelete">Delete Card</a>'
+            + '</div>'),
+    
+    // generate our html code for card details for this Model
     render: function () {
-
         var html = this.template(this.model.toJSON());
         $(this.el).html(html);
     },
+    
+    // function for closing card details 
     closeCard: function () {
         $(this.el).empty();
     },
+    
+    // remove this card from our collection 
     deleteCard: function () {
-
         myapp.instances.mycollection.remove(this.model);
+        // call function to close this window
         this.closeCard();
     }
-
-
-
-
 });
 

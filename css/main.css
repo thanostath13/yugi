@@ -1,5 +1,5 @@
 /******************************************************************************/
-/*                                      App                                   */ 
+/*                                 Main Css                                   */ 
 /******************************************************************************/  
 
 .yugiitemempty{
@@ -12,17 +12,13 @@
 }
 
 .yugiitem{
-    /* height: 70px;*/
     cursor: pointer;
 }
 
-.yugiitem div{
-    /*    height: 50px;*/
-}
 .yugiitem img{
     height: 50px;
-
 }
+
 .popover-content {
  
 overflow-y: auto;
