@@ -40,6 +40,7 @@
                     <form class="navbar-form navbar-left">
                         <div class="form-group">
                             <input type="text" placeholder="Enter Card Name" class="form-control cardname"  >
+							
                         </div>
 
                     </form>
@@ -47,7 +48,16 @@
             </div><!--/.container -->
         </nav>
 
-        <div class="jumbotron" ></div>
+        <div class="jumbotron mark" >
+            <div class="markiza">
+                <div id="marquee" behavior="scroll" scrollamount="2" direction="left"  > 
+ 
+                    <div class ="markcontent">
+                     
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="container">
             <div class="row">
@@ -57,7 +67,7 @@
                         <li class=" yugiitemempty list-group-item">Nothing in your Deck! </li>
                     </ul>
                 </div>
-                
+
                 <!-- Jumbotron with Main Card Details -->
                 <div class="col-md-8  col-xs-12 " id="det">
                     <div class="yugidetails bs-component">
@@ -88,6 +98,7 @@
         <script src = js/libs/backbone-min.js></script>
         <!--Bootstrap Js -->
         <script src="js/libs/bootstrap.min.js"></script>
+        <script src="js/libs/marquee.jquery.js"></script>
 
         <!-- app initialize -->
         <script src="js/app.js"></script>
