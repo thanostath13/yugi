@@ -8,7 +8,7 @@ var ENTER_KEY = 13;
 var ESC_KEY = 27;
 
  // the max amount of cards in our deck ( less than our limit = 30 ) 
-var decklimit = 20;
+var decklimit = 10;
 
 // Cors Productive Api Url
 var apiurl = 'https://crossorigin.me/http://yugiohprices.com/api';
