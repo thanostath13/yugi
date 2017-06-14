@@ -10,43 +10,46 @@ var app = app || {};
 //******************************************************************************
 
 app.AppView = Backbone.View.extend({
-    
     // Instead of generating a new element, bind to the existing skeleton of
     // the App already present in the HTML.
     el: 'body',
     // Delegated events for creating new items, and clearing completed ones.
-    
+
     events: {
         'keypress .cardname': 'searchWithName'
     },
-    
     // At initialization we bind to the relevant events 
     initialize: function () {
         this.instances = {};
         // this is aur collection
-        this.instances.mycollection = new app.CardC(); 
-
+        this.instances.mycollection = new app.CardC();
         // we get the cardname as input
         this.$input = this.$('.cardname');
+
+        new app.MarkizaView();
     },
-    
     // Re-rendering the App just means refreshing data but the rest of the app doesn't change.
     render: function () {
     },
-    
-    searchWithName: function (e) {
-        
+    searchWithName: function (e, fromfeatured) {
+
         var thisview = this;
         // search input after press ENTER_KEY
-        if (e.which === ENTER_KEY && this.$input.val().trim()) {
+
+        var searchfor = this.$input.val().trim();
+        if (fromfeatured !== undefined) {
+            searchfor = fromfeatured;
+        }
+
+        if ((e.which === ENTER_KEY && searchfor) || fromfeatured !== undefined) {
             $('.cardname').attr('disabled', true);
-            
+
             // make a new Http Request to get data from our api
             var request = new XMLHttpRequest();
-            request.open('GET', apiurl + '/card_data/' + this.$input.val().trim());
+            request.open('GET', apiurl + '/card_data/' + searchfor);
             request.onreadystatechange = function () {
                 if (this.readyState === 4) {
-                    
+
                     $('.cardname').attr('disabled', false);
                     console.log('Status:', this.status);
                     console.log('Headers:', this.getAllResponseHeaders());
@@ -61,7 +64,7 @@ app.AppView = Backbone.View.extend({
                     // in case that api dont returns any card
                     if (atts.status === 'fail') {
                         thisview.instances.popover = new app.PopOverViewEmtyView({model: mymodel});
-                    // in case that api returns a card 
+                        // in case that api returns a card 
                     } else if (atts.status === 'success') {
                         // we create an new card model
                         var mymodel = new app.CardM(atts);
@@ -73,15 +76,16 @@ app.AppView = Backbone.View.extend({
             }
             ;
             request.send();
-            e.preventDefault();
-            
+            if (e) {
+                e.preventDefault();
+            }
+
         } else {
             if (thisview.instances.popover !== undefined) {
                 thisview.instances.popover.destroy();
             }
         }
     },
-    
     dialogAlert: function (title, text, icon) {
         if (icon === undefined) {
             icon = 'glyphicon-info-sign';
@@ -104,12 +108,11 @@ app.AppView = Backbone.View.extend({
                 + ' </div><!-- /.modal-dialog -->'
                 + '</div><!-- /.modal -->'
                 + '');
-        
+
         var htmltoshow = alTemplate({title: title, text: text, icon: icon});
         $('#mymodalSpace').html(htmltoshow);
         $('#myModal').modal('show');
     },
-    
     //some global functions..
     jump: function (h) {
         var top = document.getElementById(h).offsetTop;
@@ -123,7 +126,7 @@ app.AppView = Backbone.View.extend({
 //******************************************************************************
 
 app.PopOverView = Backbone.View.extend({
-    el: '.cardname',
+    el: '.navbar-brand',
     initialize: function () {
         this.render();
     },
@@ -149,12 +152,12 @@ app.PopOverView = Backbone.View.extend({
             html: true
         });
         //console.log(this.model.toJSON());
-        $('.cardname').popover('show');
-        
-	var scrolPopOver = $(window).height() - 180;
-	$('.popover-content').css('max-height', scrolPopOver +'px');
-		
-		
+        $(this.el).popover('show');
+
+        var scrolPopOver = $(window).height() - 180;
+        $('.popover-content').css('max-height', scrolPopOver + 'px');
+
+
         $('.addcard').click(function () {
             console.log(pop.model);
             myapp.instances.mycollection.checkBeforeAdd(pop.model);
@@ -198,7 +201,7 @@ app.ColItemView = Backbone.View.extend({
         var html = this.template(this.model.toJSON());
         $('#mycollection').append(html);
         $(this.el).click(function () {
-        view.displayDetails();
+            view.displayDetails();
         });
     },
     destroy: function () {
@@ -221,17 +224,16 @@ app.ColItemView = Backbone.View.extend({
 //******************************************************************************
 
 app.PopOverViewEmtyView = Backbone.View.extend({
-    el: '.cardname',
+    el: '.navbar-brand',
     // initialization of Emty View Pop Over window
     initialize: function () {
         // call render function
         this.render();
     },
-    
     render: function () {
-        
+
         var pop = this;
-        
+
         // generate our html code for card details 
         $(this.el).popover({
             // plase this popover under the search
@@ -248,23 +250,22 @@ app.PopOverViewEmtyView = Backbone.View.extend({
                     + '<div class="modal-footer">'
                     + '<button type="button" class="btn btn-danger closepop" data-dismiss="modal">Close</button>'
                     + '</div>'
-            , 
+            ,
             html: true
         });
-        
+
         // show our popover
         $(this.el).popover('show');
-        
+
         var scrolPopOver = $(window).height() - 180;
-	$('.popover-content').css('max-height', scrolPopOver +'px');
-        
+        $('.popover-content').css('max-height', scrolPopOver + 'px');
+
         // close our popover function
         $('.closepop').click(function () {
             pop.destroy();
         });
-        
+
     },
-    
     // destroy our popover function
     destroy: function () {
         $(this.el).popover('destroy');
@@ -285,7 +286,6 @@ app.CardDetailsView = Backbone.View.extend({
         'click .detclose': 'closeCard',
         'click .detdelete': 'deleteCard'
     },
-    
     // generate our html code for card details 
     template: _.template(''
             + '<h2>Card Details</h2>'
@@ -311,18 +311,15 @@ app.CardDetailsView = Backbone.View.extend({
             + '<a href="#" class="btn btn-warning detclose">Close Window</a>'
             + '<a href="#" class="btn btn-danger pull-right detdelete">Delete Card</a>'
             + '</div>'),
-    
     // generate our html code for card details for this Model
     render: function () {
         var html = this.template(this.model.toJSON());
         $(this.el).html(html);
     },
-    
     // function for closing card details 
     closeCard: function () {
         $(this.el).empty();
     },
-    
     // remove this card from our collection 
     deleteCard: function () {
         myapp.instances.mycollection.remove(this.model);
@@ -331,3 +328,67 @@ app.CardDetailsView = Backbone.View.extend({
     }
 });
 
+//******************************************************************************
+//                            MarkizaView
+//******************************************************************************
+
+app.MarkizaView = Backbone.View.extend({
+    el: '.markcontent',
+    // initialization of Emty View Pop Over window
+    initialize: function () {
+        // call render function
+        this.render();
+    },
+    render: function () {
+
+//service of most expensive cards is not working... so I will sugest some..
+        var suggested = ['Black Rose Dragon', 'Horus the Black Flame Dragon LV6',
+            'Dark Paladin', 'White Night Dragon', 'Armed Dragon LV7', 'Overload Fusion',
+            'Dark Magician Girl', 'Vampire Lord', 'Glow-Up Bulb', 'Elemental HERO Gaia', 'Acorno', 'Exodia the Forbidden One',
+            'Ancient Rules','Ojama King','Nekroz of Trishula','Vision HERO Trinity','Effect Veiler','Volcanic Slicer '
+
+        ];
+
+        suggested = _.shuffle(suggested);//anakatevw..
+
+        var html = '';
+        _.each(suggested, function (row) {
+
+            html += ' <span class="label label-primary cards">' + row + '</span> ';
+
+        });
+
+
+        html = ' <span class="label label-success">  Featured cards: </span> ' + html;
+
+        // show our popover
+        $(this.el).html(html);
+
+
+        $('.markiza #marquee').marquee('pointer').mouseover(function () {
+            $(this).trigger('stop');
+        }).mouseout(function () {
+            $(this).trigger('start');
+        }).mousemove(function (event) {
+            if ($(this).data('drag') == true) {
+                this.scrollLeft = $(this).data('scrollX') + ($(this).data('x') - event.clientX);
+            }
+        }).mousedown(function (event) {
+            $(this).data('drag', true).data('x', event.clientX).data('scrollX', this.scrollLeft);
+        }).mouseup(function () {
+            $(this).data('drag', false);
+        });
+
+
+        $('.markcontent .cards').click(function () {
+            console.log($(this).text());
+
+            myapp.searchWithName('', $(this).text());
+        });
+
+
+
+    }
+
+
+});
