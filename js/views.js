@@ -341,11 +341,11 @@ app.MarkizaView = Backbone.View.extend({
     },
     render: function () {
 
-//service of most expensive cards is not working... so I will sugest some..
+        //service of most expensive cards is not working... so I will sugest some..
         var suggested = ['Black Rose Dragon', 'Horus the Black Flame Dragon LV6',
             'Dark Paladin', 'White Night Dragon', 'Armed Dragon LV7', 'Overload Fusion',
             'Dark Magician Girl', 'Vampire Lord', 'Glow-Up Bulb', 'Elemental HERO Gaia', 'Acorno', 'Exodia the Forbidden One',
-            'Ancient Rules','Ojama King','Nekroz of Trishula','Vision HERO Trinity','Effect Veiler','Volcanic Slicer '
+            'Ancient Rules', 'Ojama King', 'Nekroz of Trishula', 'Vision HERO Trinity', 'Effect Veiler', 'Volcanic Slicer '
 
         ];
 
@@ -354,12 +354,12 @@ app.MarkizaView = Backbone.View.extend({
         var html = '';
         _.each(suggested, function (row) {
 
-            html += ' <span class="label label-primary cards">' + row + '</span> ';
+            html += ' <span class="label label-default cards">' + row + '</span> ';
 
         });
 
 
-        html = ' <span class="label label-success">  Featured cards: </span> ' + html;
+        html = ' <span class="label label-badge">  Featured cards: </span> ' + html;
 
         // show our popover
         $(this.el).html(html);
