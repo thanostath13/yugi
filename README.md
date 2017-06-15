@@ -38,4 +38,4 @@
 
 * [Simple Yu Gi Oh! Deck Browser](https://thanostath13.github.io/yugi/ "Simple Yu Gi Oh! Deck Browser")
 
-...
+***
