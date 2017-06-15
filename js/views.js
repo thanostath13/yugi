@@ -311,6 +311,7 @@ app.CardDetailsView = Backbone.View.extend({
             + '<a href="#" class="btn btn-warning detclose">Close Window</a>'
             + '<a href="#" class="btn btn-danger pull-right detdelete">Delete Card</a>'
             + '</div>'),
+
     // generate our html code for card details for this Model
     render: function () {
         var html = this.template(this.model.toJSON());
@@ -341,7 +342,7 @@ app.MarkizaView = Backbone.View.extend({
     },
     render: function () {
 
-        //service of most expensive cards is not working... so I will sugest some..
+        //service of most expensive cards is not working so I will sugest some
         var suggested = ['Black Rose Dragon', 'Horus the Black Flame Dragon LV6',
             'Dark Paladin', 'White Night Dragon', 'Armed Dragon LV7', 'Overload Fusion',
             'Dark Magician Girl', 'Vampire Lord', 'Glow-Up Bulb', 'Elemental HERO Gaia', 'Acorno', 'Exodia the Forbidden One',
@@ -349,22 +350,22 @@ app.MarkizaView = Backbone.View.extend({
 
         ];
 
-        suggested = _.shuffle(suggested);//anakatevw..
+        // change order 
+        suggested = _.shuffle(suggested);
 
         var html = '';
-        _.each(suggested, function (row) {
 
+        _.each(suggested, function (row) {
+            // fill with card order
             html += ' <span class="label label-default cards">' + row + '</span> ';
 
         });
-
-
+        // set a start label Featured cards:
         html = ' <span class="label label-badge">  Featured cards: </span> ' + html;
 
         // show our popover
         $(this.el).html(html);
-
-
+        // functions with mouse movement
         $('.markiza #marquee').marquee('pointer').mouseover(function () {
             $(this).trigger('stop');
         }).mouseout(function () {
@@ -379,16 +380,11 @@ app.MarkizaView = Backbone.View.extend({
             $(this).data('drag', false);
         });
 
-
+        // on click call searchWithName
         $('.markcontent .cards').click(function () {
             console.log($(this).text());
 
             myapp.searchWithName('', $(this).text());
         });
-
-
-
     }
-
-
 });
