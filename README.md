@@ -13,6 +13,8 @@
 
 ![Yu Gi Oh](https://github.com/thanostath13/yugi/blob/master/img/yugi_diagram.jpg "Simple Yu Gi Oh! Deck Browser diagram")
 
+***
+
 ### Βασικές Δυνατότητες Εφαρμογής
 
 * Αναζήτηση βάση ονόματος μιας κάρτας στο πάνω μέρος της σελίδας.
